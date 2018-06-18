@@ -1,0 +1,2 @@
+InfiniTAM:realsense2_camera
+-DCATKIN_DEVEL_PREFIX=/home/antonyhwang/infinitam_ws/devel -DCMAKE_INSTALL_PREFIX=/home/antonyhwang/infinitam_ws/install -G Unix Makefiles
