@@ -1,8 +1,0 @@
-prefix=/home/antonyhwang/infinitam_ws/install
-
-Name: InfiniTAM
-Description: Description of InfiniTAM
-Version: 3.0.0
-Cflags: 
-Libs: -L/home/antonyhwang/infinitam_ws/install/lib 
-Requires: 
