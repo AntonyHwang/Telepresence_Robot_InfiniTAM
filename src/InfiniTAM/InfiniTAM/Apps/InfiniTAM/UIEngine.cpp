@@ -107,7 +107,7 @@ void UIEngine::glutDisplayFunction()
 	}
 	else
 	{
-		sprintf(str, "n: one frame \t b: continous \t e/esc: exit \t r: reset \t k: save \t l: load \t f: free viewpoint \t c: colours (currently %s) \t t: turn fusion %s", uiEngine->colourModes_main[uiEngine->currentColourMode].name, uiEngine->integrationActive ? "off" : "on");
+		sprintf(str, "n: one frame \t b: continous \t e/esc: exit \t r: reset \t k: save \t l: load \t f: free viewpoint \t c: colours (currently %s) \t t: turn fusion %s \t arrow keys: robot controller", uiEngine->colourModes_main[uiEngine->currentColourMode].name, uiEngine->integrationActive ? "off" : "on");
 	}
 	safe_glutBitmapString(GLUT_BITMAP_HELVETICA_12, (const char*)str);
 
@@ -169,6 +169,22 @@ void UIEngine::glutKeyUpFunction(unsigned char key, int x, int y)
 
 	switch (key)
 	{
+	case 'w':
+		printf("forward ...\n");
+		uiEngine->mainLoopAction = UIEngine::PROCESS_FRAME;
+		break;
+	case 's':
+		printf("backward ...\n");
+		uiEngine->mainLoopAction = UIEngine::PROCESS_FRAME;
+		break;
+	case 'd':
+		printf("rotate right ...\n");
+		uiEngine->mainLoopAction = UIEngine::PROCESS_FRAME;
+		break;
+	case 'a':
+		printf("rotate left ...\n");
+		uiEngine->mainLoopAction = UIEngine::PROCESS_FRAME;
+		break;
 	case 'n':
 		printf("processing one frame ...\n");
 		uiEngine->mainLoopAction = UIEngine::PROCESS_FRAME;
@@ -177,7 +193,7 @@ void UIEngine::glutKeyUpFunction(unsigned char key, int x, int y)
 		printf("processing input source ...\n");
 		uiEngine->mainLoopAction = UIEngine::PROCESS_VIDEO;
 		break;
-	case 's':
+	case 'q':
 		if (uiEngine->isRecording)
 		{
 			printf("stopped recoding disk ...\n");
@@ -269,7 +285,7 @@ void UIEngine::glutKeyUpFunction(unsigned char key, int x, int y)
 		}
 	}
 	break;
-	case 'w':
+	case 'm':
 	{
 		printf("saving scene to model ... ");
 		uiEngine->mainEngine->SaveSceneToMesh("mesh.stl");

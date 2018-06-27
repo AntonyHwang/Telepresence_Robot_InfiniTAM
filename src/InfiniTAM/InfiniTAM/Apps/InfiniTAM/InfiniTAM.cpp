@@ -2,6 +2,15 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <cstdio>
+#include <ctime>
+#include <cstdlib>
+#include <cstring>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 
 #include <ros/ros.h>
 
@@ -20,6 +29,7 @@
 #include "../../ITMLib/Core/ITMBasicEngine.h"
 #include "../../ITMLib/Core/ITMBasicSurfelEngine.h"
 #include "../../ITMLib/Core/ITMMultiEngine.h"
+#include "../../Anybots/AnybotsEngine.h"
 
 using namespace InfiniTAM::Engine;
 using namespace InputSource;
@@ -159,7 +169,10 @@ try
 	// Start ROS
 	ros::init(argc, argv, "infinitam_ros");
 	ros::start();
-	
+
+
+	//AnybotsEngine::initConnection("127.0.0.1", 1234);
+
 	const char *arg1 = "";
 	const char *arg2 = NULL;
 	const char *arg3 = NULL;

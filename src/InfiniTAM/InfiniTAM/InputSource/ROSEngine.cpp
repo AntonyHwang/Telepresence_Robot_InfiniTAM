@@ -35,8 +35,8 @@ void ROSEngine::processMessage(const ImageConstPtr& rgb_image_msg, const ImageCo
 void ROSEngine::topicListenerThread()
 {
 	// subscribe to rgb and depth topics
-    message_filters::Subscriber<sensor_msgs::Image> rgb_sub_(nh_, "/camera/color/image_raw", 1);
-        message_filters::Subscriber<sensor_msgs::Image> depth_sub_(nh_, "/camera/depth/image_rect_raw", 1);
+    message_filters::Subscriber<sensor_msgs::Image> rgb_sub_(nh_, "/camera/color/image_raw", 5);
+    message_filters::Subscriber<sensor_msgs::Image> depth_sub_(nh_, "/camera/depth/image_rect_raw", 5);
 	typedef sync_policies::ApproximateTime<sensor_msgs::Image, sensor_msgs::Image> ITAMSyncPolicy;
 	Synchronizer<ITAMSyncPolicy> sync(ITAMSyncPolicy(10), rgb_sub_, depth_sub_);
 	sync.registerCallback(boost::bind(&ROSEngine::processMessage, this, _1, _2));
