@@ -1,0 +1,8 @@
+prefix=/home/localadmin/Telepresence_Robot_InfiniTAM/install
+
+Name: InfiniTAM
+Description: Description of InfiniTAM
+Version: 3.0.0
+Cflags: 
+Libs: -L/home/localadmin/Telepresence_Robot_InfiniTAM/install/lib 
+Requires: 

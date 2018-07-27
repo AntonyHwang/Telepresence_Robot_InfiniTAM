@@ -1,0 +1,2 @@
+/usr/bin/ar qc /home/localadmin/Telepresence_Robot_InfiniTAM/devel/lib/libFernRelocLib.a  CMakeFiles/FernRelocLib.dir/FernConservatory.cpp.o CMakeFiles/FernRelocLib.dir/PoseDatabase.cpp.o CMakeFiles/FernRelocLib.dir/RelocDatabase.cpp.o
+/usr/bin/ranlib /home/localadmin/Telepresence_Robot_InfiniTAM/devel/lib/libFernRelocLib.a

@@ -1,0 +1,8 @@
+prefix=/home/localadmin/Telepresence_Robot_InfiniTAM/devel
+
+Name: razor_imu_9dof
+Description: Description of razor_imu_9dof
+Version: 1.2.0
+Cflags: -I/home/localadmin/Telepresence_Robot_InfiniTAM/devel/include
+Libs: -L/home/localadmin/Telepresence_Robot_InfiniTAM/devel/lib 
+Requires: dynamic_reconfigure

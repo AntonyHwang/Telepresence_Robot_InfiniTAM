@@ -1,12 +1,14 @@
 // authored by https://github.com/ravich2-7183
 
 #include "ROSEngine.h"
+#include <stdio.h>
 
 using namespace std;
 using namespace ORUtils;
 using namespace InputSource;
 using namespace sensor_msgs;
 using namespace message_filters;
+using namespace ITMLib;
 
 void ROSEngine::processMessage(const ImageConstPtr& rgb_image_msg, const ImageConstPtr& depth_image_msg)
 {
@@ -54,6 +56,11 @@ ROSEngine::ROSEngine(const char *calibFilename,
 			topic_listener_thread(&ROSEngine::topicListenerThread, this) // Starts up topicListenerThread
 {
 	this->calib.disparityCalib.SetStandard(); // assumes depth is in millimeters
+
+	currentFrameNo = 0;
+	cachedFrameNo = -1;
+
+	cached_imu = NULL;
 }
 
 void ROSEngine::getImages(ITMUChar4Image *rgbImage, ITMShortImage *rawDepthImage)
@@ -79,5 +86,56 @@ Vector2i ROSEngine::getRGBImageSize(void) const
 	return Vector2i(rgb_image_.noDims.x , rgb_image_.noDims.y);
 }
 
+void ROSEngine::loadIMUIntoCache(void)
+{
+	char str[2048]; FILE *f; bool success = false;
+
+	cached_imu = new ITMIMUMeasurement();
+
+	sprintf(str, imuMask, currentFrameNo);
+	f = fopen(str, "r");
+	if (f)
+	{
+		size_t ret = fscanf(f, "%f %f %f %f %f %f %f %f %f",
+							&cached_imu->R.m00, &cached_imu->R.m01, &cached_imu->R.m02,
+							&cached_imu->R.m10, &cached_imu->R.m11, &cached_imu->R.m12,
+							&cached_imu->R.m20, &cached_imu->R.m21, &cached_imu->R.m22);
+
+		fclose(f);
+
+		if (ret == 9) success = true;
+	}
+
+	if (!success) {
+		delete cached_imu; cached_imu = NULL;
+		printf("error reading file '%s'\n", str);
+	}
+}
+
+bool ROSEngine::hasMoreMeasurements(void)
+{
+	loadIMUIntoCache();
+
+	return (cached_imu != NULL);
+}
+
+void ROSEngine::getMeasurement(ITMIMUMeasurement *imu)
+{
+	bool bUsedCache = false;
+
+	if (cached_imu != NULL)
+	{
+		imu->R = cached_imu->R;
+		delete cached_imu;
+		cached_imu = NULL;
+		bUsedCache = true;
+	}
+
+	if (!bUsedCache) this->loadIMUIntoCache();
+
+	++currentFrameNo;
+}
+
 ROSEngine::~ROSEngine()
 {}
+
