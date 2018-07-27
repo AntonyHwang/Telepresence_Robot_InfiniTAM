@@ -2,6 +2,7 @@
 
 #include "ROSEngine.h"
 #include <stdio.h>
+#include "../ORUtils/FileUtils.h"
 
 using namespace std;
 using namespace ORUtils;
@@ -10,7 +11,7 @@ using namespace sensor_msgs;
 using namespace message_filters;
 using namespace ITMLib;
 
-void ROSEngine::processMessage(const ImageConstPtr& rgb_image_msg, const ImageConstPtr& depth_image_msg)
+void ROSEngine::processMessage(const ImageConstPtr& rgb_image_msg, const ImageConstPtr& depth_image_msg, const ImuConstPtr& imu_msg)
 {
 	std::lock_guard<std::mutex> process_message_lock(images_mutex_);
 
@@ -32,6 +33,39 @@ void ROSEngine::processMessage(const ImageConstPtr& rgb_image_msg, const ImageCo
 	for(int i = 0; i < depth_image_.noDims.x * depth_image_.noDims.y; i++) {
 		depth[i] = depth_msg_data[i];
 	}
+
+//	bool bUsedCache = false;
+//
+//	if (cached_imu != NULL)
+//	{
+//		imu->R = cached_imu->R;
+//		delete cached_imu;
+//		cached_imu = NULL;
+//		bUsedCache = true;
+//	}
+//
+//	if (!bUsedCache) {
+//		//load into cache
+//
+//		cached_imu = new ITMIMUMeasurement();
+//
+//		float x = imu_msg->orientation.x;
+//		float y = imu_msg->orientation.y;
+//		float z = imu_msg->orientation.z;
+//		float w = imu_msg->orientation.w;
+//
+//		cached_imu->R.m00 = 1-2*y*y-2*z*z;
+//		cached_imu->R.m01 = 2*x*y-2*z*w;
+//		cached_imu->R.m02 = 2*x*z+2*y*w;
+//		cached_imu->R.m10 = 2*x*y+2*z*w;
+//		cached_imu->R.m11 = 1-2*x*x-2*z*z;
+//		cached_imu->R.m12 = 2*y*z-2*x*w;
+//		cached_imu->R.m20 = 2*x*z-2*y*w;
+//		cached_imu->R.m21 = 2*y*z+2*x*w;
+//		cached_imu->R.m22 = 1-2*x*x-2*y*y;
+//	}
+//
+//	++currentFrameNo;
 }
 
 void ROSEngine::topicListenerThread()
@@ -39,9 +73,10 @@ void ROSEngine::topicListenerThread()
 	// subscribe to rgb and depth topics
     message_filters::Subscriber<sensor_msgs::Image> rgb_sub_(nh_, "/camera/color/image_raw", 5);
     message_filters::Subscriber<sensor_msgs::Image> depth_sub_(nh_, "/camera/depth/image_rect_raw", 5);
-	typedef sync_policies::ApproximateTime<sensor_msgs::Image, sensor_msgs::Image> ITAMSyncPolicy;
-	Synchronizer<ITAMSyncPolicy> sync(ITAMSyncPolicy(10), rgb_sub_, depth_sub_);
-	sync.registerCallback(boost::bind(&ROSEngine::processMessage, this, _1, _2));
+	message_filters::Subscriber<sensor_msgs::Imu> imu_sub_(nh_, "/imu", 5);
+	typedef sync_policies::ApproximateTime<sensor_msgs::Image, sensor_msgs::Image, sensor_msgs::Imu> ITAMSyncPolicy;
+	Synchronizer<ITAMSyncPolicy> sync(ITAMSyncPolicy(10), rgb_sub_, depth_sub_, imu_sub_);
+	sync.registerCallback(boost::bind(&ROSEngine::processMessage, this, _1, _2, _3));
 
 	ros::spin();
 }
