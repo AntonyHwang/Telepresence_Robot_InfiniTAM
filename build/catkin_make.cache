@@ -1,2 +1,0 @@
-InfiniTAM:razor_imu_9dof:realsense2_camera
--DCATKIN_DEVEL_PREFIX=/home/localadmin/Telepresence_Robot_InfiniTAM/devel -DCMAKE_INSTALL_PREFIX=/home/localadmin/Telepresence_Robot_InfiniTAM/install -G Unix Makefiles

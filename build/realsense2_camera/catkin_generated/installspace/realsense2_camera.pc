@@ -1,8 +1,0 @@
-prefix=/home/localadmin/Telepresence_Robot_InfiniTAM/install
-
-Name: realsense2_camera
-Description: Description of realsense2_camera
-Version: 2.0.3
-Cflags: -I/home/localadmin/Telepresence_Robot_InfiniTAM/install/include
-Libs: -L/home/localadmin/Telepresence_Robot_InfiniTAM/install/lib -lrealsense2_camera
-Requires: message_runtime roscpp sensor_msgs std_msgs librealsense2 nodelet cv_bridge image_transport dynamic_reconfigure
