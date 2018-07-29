@@ -64,7 +64,7 @@ void ROSEngine::processMessage(const ImageConstPtr& rgb_image_msg, const ImageCo
 	cached_imu->R.m21 = 2*y*z+2*x*w;
 	cached_imu->R.m22 = 1-2*x*x-2*y*y;
 //	}
-
+    //cout << cached_imu->R.m00 << endl;
 	++currentFrameNo;
 }
 

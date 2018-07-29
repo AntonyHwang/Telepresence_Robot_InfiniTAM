@@ -98,7 +98,9 @@ static void CreateDefaultImageSource(ImageSourceEngine* & imageSource, IMUSource
 		if (imageSource->getDepthImageSize().x == 0)
 		{
 			delete imageSource;
+			delete imuSource;
 			imageSource = NULL;
+			imuSource = NULL;
 		}
 	}
 
