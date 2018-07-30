@@ -6,6 +6,7 @@
 
 #include "../ITMLib/Objects/Camera/ITMRGBDCalib.h"
 #include "../ITMLib/Utils/ITMImageTypes.h"
+#include "IMUSourceEngine.h"
 
 namespace InputSource {
 
@@ -65,6 +66,7 @@ namespace InputSource {
 		 * \return  true, if the image source engine is able to yield more RGB-D images, or false otherwise.
 		 */
 		virtual bool hasMoreImages(void) const = 0;
+		IMUSourceEngine *imuSource = new IMUSourceEngine;
 	};
 
 	class BaseImageSourceEngine : public ImageSourceEngine

@@ -630,7 +630,11 @@ void UIEngine::ProcessFrame()
 	if (imuSource != NULL) {
 		if (!imuSource->hasMoreMeasurements()) return;
 		else imuSource->getMeasurement(inputIMUMeasurement);
+
+		std::cout << "reached" << std::endl;
 	}
+	std::cout << "reached" << std::endl;
+	std::cout << inputIMUMeasurement->R << std::endl;
 
 	if (isRecording)
 	{
@@ -660,7 +664,6 @@ void UIEngine::ProcessFrame()
 	//actual processing on the mailEngine
 //	if (imuSource != NULL) trackerResult = mainEngine->ProcessFrame(inputRGBImage, inputRawDepthImage, inputIMUMeasurement);
 //	else trackerResult = mainEngine->ProcessFrame(inputRGBImage, inputRawDepthImage);
-	std::cout << inputIMUMeasurement->R << std::endl;
 	trackerResult = mainEngine->ProcessFrame(inputRGBImage, inputRawDepthImage, inputIMUMeasurement);
 
 	trackingResult = (int)trackerResult;

@@ -69,7 +69,7 @@ static void CreateDefaultImageSource(ImageSourceEngine* & imageSource, IMUSource
 		{
 			printf("using imu data: %s\n", filename_imu);
 			imageSource = new RawFileReader(calibFile, filename1, filename2, Vector2i(320, 240), 0.5f);
-			imuSource = new IMUSourceEngine(filename_imu);
+			//imuSource = new IMUSourceEngine(filename_imu);
 		}
 
 		if (imageSource->getDepthImageSize().x == 0)
@@ -95,6 +95,7 @@ static void CreateDefaultImageSource(ImageSourceEngine* & imageSource, IMUSource
 	{
 		printf("trying ROS input: /camera/depth/image_raw, /camera/rgb/image_color \n");
 		imageSource = new ROSEngine(calibFile);
+		imuSource = imageSource->imuSource;
 		if (imageSource->getDepthImageSize().x == 0)
 		{
 			delete imageSource;

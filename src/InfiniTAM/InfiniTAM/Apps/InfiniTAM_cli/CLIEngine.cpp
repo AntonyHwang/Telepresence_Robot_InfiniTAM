@@ -46,8 +46,8 @@ bool CLIEngine::ProcessFrame()
 	imageSource->getImages(inputRGBImage, inputRawDepthImage);
 
 	if (imuSource != NULL) {
-		if (!imuSource->hasMoreMeasurements()) return false;
-		else imuSource->getMeasurement(inputIMUMeasurement);
+//		if (!imuSource->hasMoreMeasurements()) return false;
+//		else imuSource->getMeasurement(inputIMUMeasurement);
 	}
 
 	sdkResetTimer(&timer_instant);

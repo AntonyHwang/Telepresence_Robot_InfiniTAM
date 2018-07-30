@@ -8,19 +8,16 @@ namespace InputSource {
 
 class IMUSourceEngine
 {
-private:
-	static const int BUF_SIZE = 2048;
-	char imuMask[BUF_SIZE];
+
+public:
+	IMUSourceEngine();
+	~IMUSourceEngine() { }
 
 	ITMLib::ITMIMUMeasurement *cached_imu;
 
-	void loadIMUIntoCache();
+	//void loadIMUIntoCache();
 	int cachedFrameNo;
 	int currentFrameNo;
-
-public:
-	IMUSourceEngine(const char *imuMask);
-	~IMUSourceEngine() { }
 
 	bool hasMoreMeasurements(void);
 	void getMeasurement(ITMLib::ITMIMUMeasurement *imu);

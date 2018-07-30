@@ -4,6 +4,7 @@
 
 #include "../ORUtils/FileUtils.h"
 #include "ImageSourceEngine.h"
+#include "IMUSourceEngine.h"
 #include "../ITMLib/Objects/Misc/ITMIMUMeasurement.h"
 
 #include <iostream>
@@ -38,15 +39,6 @@ private:
 	std::thread topic_listener_thread;
 	std::mutex images_mutex_;
 
-	static const int BUF_SIZE = 2048;
-	char imuMask[BUF_SIZE];
-
-	ITMLib::ITMIMUMeasurement *cached_imu;
-
-	void loadIMUIntoCache();
-	int cachedFrameNo;
-	int currentFrameNo;
-
 public:
 	ROSEngine(const char *calibFilename, 
 			  Vector2i imageSize_rgb = Vector2i(640, 480),
@@ -66,8 +58,6 @@ public:
 	Vector2i getDepthImageSize(void) const;
 	Vector2i getRGBImageSize(void) const;
 
-	bool hasMoreMeasurements(void);
-	void getMeasurement(ITMLib::ITMIMUMeasurement *imu);
 };
 
 }
