@@ -57,43 +57,9 @@ static void CreateDefaultImageSource(ImageSourceEngine* & imageSource, IMUSource
 
 	printf("using calibration file: %s\n", calibFile);
 
-	if ((imageSource == NULL) && (filename2 != NULL))
-	{
-		printf("using rgb images: %s\nusing depth images: %s\n", filename1, filename2);
-		if (filename_imu == NULL)
-		{
-			ImageMaskPathGenerator pathGenerator(filename1, filename2);
-			imageSource = new ImageFileReader<ImageMaskPathGenerator>(calibFile, pathGenerator);
-		}
-		else
-		{
-			printf("using imu data: %s\n", filename_imu);
-			imageSource = new RawFileReader(calibFile, filename1, filename2, Vector2i(320, 240), 0.5f);
-			//imuSource = new IMUSourceEngine(filename_imu);
-		}
-
-		if (imageSource->getDepthImageSize().x == 0)
-		{
-			delete imageSource;
-			if (imuSource != NULL) delete imuSource;
-			imuSource = NULL;
-			imageSource = NULL;
-		}
-	}
-
-	if ((imageSource == NULL) && (filename1 != NULL) && (filename_imu == NULL))
-	{
-		imageSource = new InputSource::FFMPEGReader(calibFile, filename1, filename2);
-		if (imageSource->getDepthImageSize().x == 0)
-		{
-			delete imageSource;
-			imageSource = NULL;
-		}
-	}
-
 	if (imageSource == NULL)
 	{
-		printf("trying ROS input: /camera/depth/image_raw, /camera/rgb/image_color \n");
+		printf("trying ROS input with IMU \n");
 		imageSource = new ROSEngine(calibFile);
 		imuSource = imageSource->imuSource;
 		if (imageSource->getDepthImageSize().x == 0)
@@ -102,33 +68,6 @@ static void CreateDefaultImageSource(ImageSourceEngine* & imageSource, IMUSource
 			delete imuSource;
 			imageSource = NULL;
 			imuSource = NULL;
-		}
-	}
-
-	if (imageSource == NULL)
-	{
-		// If no calibration file specified, use the factory default calibration
-		bool useInternalCalibration = !calibFile || strlen(calibFile) == 0;
-
-		printf("trying OpenNI device: %s - calibration: %s\n",
-				filename1 ? filename1 : "<OpenNI default device>",
-				useInternalCalibration ? "internal" : "from file");
-		imageSource = new OpenNIEngine(calibFile, filename1, useInternalCalibration);
-		if (imageSource->getDepthImageSize().x == 0)
-		{
-			delete imageSource;
-			imageSource = NULL;
-		}
-	}
-
-	if (imageSource == NULL)
-	{
-		printf("trying UVC device\n");
-		imageSource = new LibUVCEngine(calibFile);
-		if (imageSource->getDepthImageSize().x == 0)
-		{
-			delete imageSource;
-			imageSource = NULL;
 		}
 	}
 
@@ -143,27 +82,6 @@ static void CreateDefaultImageSource(ImageSourceEngine* & imageSource, IMUSource
 		}
 	}
 
-	if (imageSource == NULL)
-	{
-		printf("trying MS Kinect 2 device\n");
-		imageSource = new Kinect2Engine(calibFile);
-		if (imageSource->getDepthImageSize().x == 0)
-		{
-			delete imageSource;
-			imageSource = NULL;
-		}
-	}
-
-	if (imageSource == NULL)
-	{
-		printf("trying PMD PicoFlexx device\n");
-		imageSource = new PicoFlexxEngine(calibFile);
-		if (imageSource->getDepthImageSize().x == 0)
-		{
-			delete imageSource;
-			imageSource = NULL;
-		}
-	}
 }
 
 int main(int argc, char** argv)

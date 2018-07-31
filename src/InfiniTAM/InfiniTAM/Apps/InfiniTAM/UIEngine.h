@@ -9,6 +9,7 @@
 #include "../../ITMLib/Utils/ITMLibSettings.h"
 #include "../../ORUtils/FileUtils.h"
 #include "../../ORUtils/NVTimer.h"
+#include "../../MiniSlamGraphLib/QuaternionHelpers.h"
 
 #include <vector>
 
