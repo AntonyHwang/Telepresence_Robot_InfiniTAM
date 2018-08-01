@@ -9,9 +9,7 @@
 using namespace InputSource;
 using namespace ITMLib;
 
-IMUSourceEngine::IMUSourceEngine(const char *imuMask)
-{
-	strncpy(this->imuMask, imuMask, BUF_SIZE);
+IMUSourceEngine::IMUSourceEngine(){
 
 	currentFrameNo = 0;
 	cachedFrameNo = -1;
@@ -19,7 +17,7 @@ IMUSourceEngine::IMUSourceEngine(const char *imuMask)
 	cached_imu = NULL;
 }
 
-void IMUSourceEngine::loadIMUIntoCache(void)
+/*void IMUSourceEngine::loadIMUIntoCache(void)
 {
 	char str[2048]; FILE *f; bool success = false;
 
@@ -43,28 +41,28 @@ void IMUSourceEngine::loadIMUIntoCache(void)
 		delete cached_imu; cached_imu = NULL;
 		printf("error reading file '%s'\n", str);
 	}
-}
+}*/
 
 bool IMUSourceEngine::hasMoreMeasurements(void)
 {
-	loadIMUIntoCache();
+	//loadIMUIntoCache();
 
 	return (cached_imu != NULL);
 }
 
 void IMUSourceEngine::getMeasurement(ITMIMUMeasurement *imu)
 {
-	bool bUsedCache = false;
+	//bool bUsedCache = false;
 	
 	if (cached_imu != NULL)
 	{
 		imu->R = cached_imu->R;
 		delete cached_imu;
 		cached_imu = NULL;
-		bUsedCache = true;
+		//bUsedCache = true;
 	}
 
-	if (!bUsedCache) this->loadIMUIntoCache();
+	//if (!bUsedCache) this->loadIMUIntoCache();
 
 	++currentFrameNo;
 }

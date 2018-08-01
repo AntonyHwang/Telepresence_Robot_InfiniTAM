@@ -73,7 +73,7 @@ try
 		{
 			printf("using rgb images: %s\nusing depth images: %s\nusing imu data: %s\n", imagesource_part1, imagesource_part2, imagesource_part3);
 			imageSource = new RawFileReader(calibFile, imagesource_part1, imagesource_part2, Vector2i(320, 240), 0.5f);
-			imuSource = new IMUSourceEngine(imagesource_part3);
+			imuSource = new IMUSourceEngine();
 		}
 	}
 

@@ -4,6 +4,8 @@
 
 #include "../ORUtils/FileUtils.h"
 #include "ImageSourceEngine.h"
+#include "IMUSourceEngine.h"
+#include "../ITMLib/Objects/Misc/ITMIMUMeasurement.h"
 
 #include <iostream>
 #include <stdexcept>
@@ -16,6 +18,7 @@
 #include <message_filters/synchronizer.h>
 #include <message_filters/sync_policies/approximate_time.h>
 #include <sensor_msgs/Image.h>
+#include <sensor_msgs/Imu.h>
 #include <image_transport/image_transport.h>
 #include <cv_bridge/cv_bridge.h>
 #include <sensor_msgs/image_encodings.h>
@@ -30,7 +33,7 @@ class ROSEngine : public BaseImageSourceEngine
 {
 private:
 	ros::NodeHandle nh_;
-	ros::Subscriber rgb_sub_, depth_sub_;
+	ros::Subscriber rgb_sub_, depth_sub_, imu_sub_;
 	ITMUChar4Image rgb_image_;
 	ITMShortImage depth_image_;
 	std::thread topic_listener_thread;
@@ -46,7 +49,7 @@ public:
 	   @param rgb_image_msg must have an encoding "bgr8"
 	   @param depth_image_msg must have an encoding "mono16" or "16UC1" which is the depth in mm. 
 	*/
-	void processMessage(const sensor_msgs::ImageConstPtr& rgb_image_msg, const sensor_msgs::ImageConstPtr& depth_image_msg);
+	void processMessage(const sensor_msgs::ImageConstPtr& rgb_image_msg, const sensor_msgs::ImageConstPtr& depth_image_msg, const sensor_msgs::ImuConstPtr& imu_msg);
 
 	void topicListenerThread();
 	
@@ -54,6 +57,7 @@ public:
 	void getImages(ITMUChar4Image *rgb, ITMShortImage *rawDepth);
 	Vector2i getDepthImageSize(void) const;
 	Vector2i getRGBImageSize(void) const;
+
 };
 
 }
