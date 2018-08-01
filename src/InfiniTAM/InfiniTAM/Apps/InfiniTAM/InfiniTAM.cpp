@@ -90,6 +90,7 @@ try
 	// Start ROS
 	ros::init(argc, argv, "infinitam_ros");
 	ros::start();
+	remove( "Results/tracking_results.txt" );
 
 
 	//AnybotsEngine::initConnection("127.0.0.1", 1234);

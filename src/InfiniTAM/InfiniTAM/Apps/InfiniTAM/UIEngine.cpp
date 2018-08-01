@@ -190,6 +190,7 @@ void UIEngine::glutKeyUpFunction(unsigned char key, int x, int y)
 		uiEngine->mainLoopAction = UIEngine::PROCESS_FRAME;
 		break;
 	case 'b':
+        remove( "Results/tracking_results.txt" );
 		printf("processing input source ...\n");
 		uiEngine->mainLoopAction = UIEngine::PROCESS_VIDEO;
 		break;
@@ -294,6 +295,7 @@ void UIEngine::glutKeyUpFunction(unsigned char key, int x, int y)
 	break;
 	case 'r':
 	{
+        remove( "Results/tracking_results.txt" );
 		ITMBasicEngine<ITMVoxel, ITMVoxelIndex> *basicEngine = dynamic_cast<ITMBasicEngine<ITMVoxel, ITMVoxelIndex>*>(uiEngine->mainEngine);
 		if (basicEngine != NULL) basicEngine->resetAll();
 
@@ -665,13 +667,15 @@ void UIEngine::ProcessFrame()
 	trackerResult = mainEngine->ProcessFrame(inputRGBImage, inputRawDepthImage, inputIMUMeasurement);
 	trackingResult = (int)trackerResult;
 
+    std::ofstream res_file;
+    res_file.open("Results/tracking_results.txt", std::ios_base::app);
 	ORUtils::Matrix4<float> pose = mainEngine->GetTrackingState()->pose_d->GetInvM();
 	double rotation[9], q[4];
 	for(size_t i=0;i<9;i++) rotation[i] = pose.m[(i%3)*4 + (i/3)];
 	MiniSlamGraph::QuaternionHelpers::QuaternionFromRotationMatrix(rotation, q);
-	std::cout << currentFrameNo << std::endl
-			  << " " << pose.m[12] << " " << pose.m[13] << " " << pose.m[14] << std::endl
-			  << " " << q[1] << " " << q[2] << " " << q[3] << " " << q[0] << std::endl << std::endl;
+	res_file  << currentFrameNo
+			  << " " << pose.m[12] << " " << pose.m[13] << " " << pose.m[14]
+			  << " " << q[1] << " " << q[2] << " " << q[3] << " " << q[0] << std::endl;
 
 #ifndef COMPILE_WITHOUT_CUDA
 	ORcudaSafeCall(cudaThreadSynchronize());

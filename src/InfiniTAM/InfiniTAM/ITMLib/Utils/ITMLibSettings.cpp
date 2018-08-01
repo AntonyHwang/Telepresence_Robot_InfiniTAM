@@ -62,7 +62,7 @@ ITMLibSettings::ITMLibSettings(void)
 					  "outlierColourC=0.175,outlierColourF=0.005,"
 					  "outlierSpaceC=0.1,outlierSpaceF=0.004,"
 					  "numiterC=20,numiterF=50,tukeyCutOff=8,"
-					  "framesToSkip=20,framesToWeight=50,failureDec=20.0";
+					  "framesToSkip=5,framesToWeight=50,failureDec=20.0";
 
 	// Colour only tracking, using rendered colours
 	//trackerConfig = "type=rgb,levels=rrbb";
