@@ -281,25 +281,21 @@ float ACCEL_Z_MAX = 250;
 
 // Magnetometer (standard calibration mode)
 // "magn x,y,z (min/max) = X_MIN/X_MAX  Y_MIN/Y_MAX  Z_MIN/Z_MAX"
-float MAGN_X_MIN = -600;
+float MAGN_X_MIN = -360;
 float MAGN_X_MAX = 600;
-float MAGN_Y_MIN = -600;
-float MAGN_Y_MAX = 600;
-float MAGN_Z_MIN = -600;
-float MAGN_Z_MAX = 600;
+float MAGN_Y_MIN = -990;
+float MAGN_Y_MAX = 5;
+float MAGN_Z_MIN = -100;
+float MAGN_Z_MAX = 430;
 
 // Magnetometer (extended calibration mode)
 // Set to true to use extended magnetometer calibration (compensates hard & soft iron errors)
 //boolean CALIBRATION__MAGN_USE_EXTENDED = false;
 //float magn_ellipsoid_center[3] = {0, 0, 0};
 //float magn_ellipsoid_transform[3][3] = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
-//boolean CALIBRATION__MAGN_USE_EXTENDED = true;
-//float magn_ellipsoid_center[3] = {126.801, -461.666, -402.417};
-//float magn_ellipsoid_transform[3][3] = {{0.994508, -0.0140238, 0.0187158}, {-0.0140238, 0.958950, 0.0366377}, {0.0187158, 0.0366377, 0.912487}};
-
 boolean CALIBRATION__MAGN_USE_EXTENDED = true;
-float magn_ellipsoid_center[3] = {386.628, -499.416, -642.219};
-float magn_ellipsoid_transform[3][3] = {{0.990312, -0.00207322, -0.0117924}, {-0.00207322, 0.979986, 0.0162755}, {-0.0117924, 0.0162755, 0.967587}};
+float magn_ellipsoid_center[3] = {96.9494, -496.163, -407.136};
+float magn_ellipsoid_transform[3][3] = {{0.952328, -0.00650863, 0.0215618}, {-0.00650863, 0.998473, 0.00863579}, {0.0215618, 0.00863579, 0.939493}};
 
 // Gyroscope
 // "gyro x,y,z (current/average) = .../OFFSET_X  .../OFFSET_Y  .../OFFSET_Z

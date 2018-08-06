@@ -91,6 +91,13 @@ ROSEngine::ROSEngine(const char *calibFilename,
 			topic_listener_thread(&ROSEngine::topicListenerThread, this) // Starts up topicListenerThread
 {
 	this->calib.disparityCalib.SetStandard(); // assumes depth is in millimeters
+	std::cout << this->calib.intrinsics_rgb.projectionParamsSimple.all << std::endl;
+	std::cout << this->calib.intrinsics_d.projectionParamsSimple.all << std::endl;
+    std::cout << this->calib.trafo_rgb_to_depth.calib << std::endl;
+    std::cout << this->calib.disparityCalib.GetParams() << std::endl;
+
+//	ITMLib::readIntrinsics(src, this->calib.intrinsics_rgb);
+//	ITMLib::readIntrinsics(src, this->calib.intrinsics_d);
 
 }
 

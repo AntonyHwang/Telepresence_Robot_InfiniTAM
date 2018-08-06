@@ -664,6 +664,7 @@ void UIEngine::ProcessFrame()
 	//actual processing on the mailEngine
 //	if (imuSource != NULL) trackerResult = mainEngine->ProcessFrame(inputRGBImage, inputRawDepthImage, inputIMUMeasurement);
 //	else trackerResult = mainEngine->ProcessFrame(inputRGBImage, inputRawDepthImage);
+//    trackerResult = mainEngine->ProcessFrame(inputRGBImage, inputRawDepthImage);
 	trackerResult = mainEngine->ProcessFrame(inputRGBImage, inputRawDepthImage, inputIMUMeasurement);
 	trackingResult = (int)trackerResult;
 

@@ -272,40 +272,36 @@ boolean output_errors = false;  // true or false
 // For the M0, only the extended magnetometer calibration seems to be really necessary if DEBUG__USE_DMP_M0 is set to true...
 // Accelerometer
 // "accel x,y,z (min/max) = X_MIN/X_MAX  Y_MIN/Y_MAX  Z_MIN/Z_MAX"
-float ACCEL_X_MIN = -280;
-float ACCEL_X_MAX = 263;
-float ACCEL_Y_MIN = -258;
-float ACCEL_Y_MAX = 263;
-float ACCEL_Z_MIN = 232;
-float ACCEL_Z_MAX = 264;
+float ACCEL_X_MIN = -250;
+float ACCEL_X_MAX = 250;
+float ACCEL_Y_MIN = -250;
+float ACCEL_Y_MAX = 250;
+float ACCEL_Z_MIN = -250;
+float ACCEL_Z_MAX = 250;
 
 // Magnetometer (standard calibration mode)
 // "magn x,y,z (min/max) = X_MIN/X_MAX  Y_MIN/Y_MAX  Z_MIN/Z_MAX"
-float MAGN_X_MIN = -600;
+float MAGN_X_MIN = -360;
 float MAGN_X_MAX = 600;
-float MAGN_Y_MIN = -600;
-float MAGN_Y_MAX = 600;
-float MAGN_Z_MIN = -600;
-float MAGN_Z_MAX = 600;
+float MAGN_Y_MIN = -990;
+float MAGN_Y_MAX = 5;
+float MAGN_Z_MIN = -100;
+float MAGN_Z_MAX = 430;
 
 // Magnetometer (extended calibration mode)
 // Set to true to use extended magnetometer calibration (compensates hard & soft iron errors)
 //boolean CALIBRATION__MAGN_USE_EXTENDED = false;
 //float magn_ellipsoid_center[3] = {0, 0, 0};
 //float magn_ellipsoid_transform[3][3] = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
-//boolean CALIBRATION__MAGN_USE_EXTENDED = true;
-//float magn_ellipsoid_center[3] = {126.801, -461.666, -402.417};
-//float magn_ellipsoid_transform[3][3] = {{0.994508, -0.0140238, 0.0187158}, {-0.0140238, 0.958950, 0.0366377}, {0.0187158, 0.0366377, 0.912487}};
-
 boolean CALIBRATION__MAGN_USE_EXTENDED = true;
-float magn_ellipsoid_center[3] = {389.736, -491.334, -647.763};
-float magn_ellipsoid_transform[3][3] = {{0.997033, 0.00662060, -0.0112393}, {0.00662060, 0.979845, 0.0177829}, {-0.0112393, 0.0177829, 0.947512}};
+float magn_ellipsoid_center[3] = {96.9494, -496.163, -407.136};
+float magn_ellipsoid_transform[3][3] = {{0.952328, -0.00650863, 0.0215618}, {-0.00650863, 0.998473, 0.00863579}, {0.0215618, 0.00863579, 0.939493}};
 
 // Gyroscope
 // "gyro x,y,z (current/average) = .../OFFSET_X  .../OFFSET_Y  .../OFFSET_Z
-float GYRO_AVERAGE_OFFSET_X = -0.01;
-float GYRO_AVERAGE_OFFSET_Y = -0.01;
-float GYRO_AVERAGE_OFFSET_Z = 0.01;
+float GYRO_AVERAGE_OFFSET_X = 0.0;
+float GYRO_AVERAGE_OFFSET_Y = 0.0;
+float GYRO_AVERAGE_OFFSET_Z = 0.0;
 
 /*
 // Calibration example:
@@ -985,8 +981,7 @@ void loop()
       if (output_stream_on || output_single_on) output_calibration(curr_calibration_sensor);
     }
     else if (output_mode == OUTPUT__MODE_ANGLES)  // Output angles
-    {file:///home/antonyhwang/Desktop/Telepresence_Robot_InfiniTAM/Razor_AHRS/Razor_AHRS.ino
-
+    {
       // Apply sensor calibration
       compensate_sensor_errors();
 
