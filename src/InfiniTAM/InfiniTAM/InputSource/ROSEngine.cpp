@@ -110,7 +110,8 @@ void ROSEngine::processMessage(const ImageConstPtr& rgb_image_msg, const ImageCo
 	imuSource->cached_imu->R.m21 = 2*y*z+2*x*w;
 	imuSource->cached_imu->R.m22 = 1-2*x*x-2*y*y;
 //	}
-	imuSource->currentFrameNo++;
+//    std::cout << imuSource->currentFrameNo << std::endl;
+//    std::cout << "msg " << x << " " << y << " " << z << " " << w << std::endl;
 }
 
 void ROSEngine::topicListenerThread()

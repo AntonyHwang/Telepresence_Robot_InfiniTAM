@@ -5,6 +5,7 @@
 #include "../ORUtils/FileUtils.h"
 
 #include <stdio.h>
+#include <iostream>
 
 using namespace InputSource;
 using namespace ITMLib;
@@ -52,17 +53,12 @@ bool IMUSourceEngine::hasMoreMeasurements(void)
 
 void IMUSourceEngine::getMeasurement(ITMIMUMeasurement *imu)
 {
-	//bool bUsedCache = false;
-	
 	if (cached_imu != NULL)
 	{
 		imu->R = cached_imu->R;
 		delete cached_imu;
 		cached_imu = NULL;
-		//bUsedCache = true;
 	}
-
-	//if (!bUsedCache) this->loadIMUIntoCache();
 
 	++currentFrameNo;
 }

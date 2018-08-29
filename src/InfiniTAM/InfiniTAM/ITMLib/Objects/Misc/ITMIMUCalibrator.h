@@ -55,6 +55,7 @@ namespace ITMLib
 			}
 			
 			hasTwoFrames = true;
+
 			return imuPose_cameracoords->GetR();
 		}
 
