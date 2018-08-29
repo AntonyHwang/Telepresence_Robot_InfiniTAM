@@ -674,9 +674,15 @@ void UIEngine::ProcessFrame()
 	double rotation[9], q[4];
 	for(size_t i=0;i<9;i++) rotation[i] = pose.m[(i%3)*4 + (i/3)];
 	MiniSlamGraph::QuaternionHelpers::QuaternionFromRotationMatrix(rotation, q);
-	res_file  << currentFrameNo
+    //std::cout << pose.m[12] << " " << pose.m[13] << " " << pose.m[14] << std::endl;
+//	res_file  << currentFrameNo
+//			  << " " << pose.m[12] << " " << pose.m[13] << " " << pose.m[14]
+//			  << " " << q[1] << " " << q[2] << " " << q[3] << " " << q[0] << std::endl;
+
+    res_file  << currentFrameNo
 			  << " " << pose.m[12] << " " << pose.m[13] << " " << pose.m[14]
 			  << " " << q[1] << " " << q[2] << " " << q[3] << " " << q[0] << std::endl;
+    std::cout << " " << q[1] << " " << q[2] << " " << q[3] << " " << q[0] << std::endl;
 
 #ifndef COMPILE_WITHOUT_CUDA
 	ORcudaSafeCall(cudaThreadSynchronize());

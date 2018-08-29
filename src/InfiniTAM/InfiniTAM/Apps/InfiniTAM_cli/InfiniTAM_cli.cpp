@@ -60,7 +60,7 @@ try
 			printf("trying MS Kinect device\n");
 			imageSource = new Kinect2Engine(calibFile);
 		}
-	} 
+	}
 	else
 	{
 		if (imagesource_part3 == NULL)

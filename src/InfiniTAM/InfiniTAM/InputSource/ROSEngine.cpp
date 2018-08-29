@@ -54,6 +54,52 @@ void ROSEngine::processMessage(const ImageConstPtr& rgb_image_msg, const ImageCo
 	float z = imu_msg->orientation.z;
 	float w = imu_msg->orientation.w;
 
+	double roll, pitch, yaw;
+    // roll (x-axis rotation)
+    double sinr = +2.0 * (w * x + y * z);
+    double cosr = +1.0 - 2.0 * (x * x + y * y);
+    roll = atan2(sinr, cosr);
+
+    // pitch (y-axis rotation)
+    double sinp = +2.0 * (w * y - z * x);
+    if (fabs(sinp) >= 1) {
+        pitch = copysign(M_PI / 2, sinp); // use 90 degrees if out of range
+    }
+    else {
+        pitch = asin(sinp);
+    }
+
+    // yaw (z-axis rotation)
+    double siny = +2.0 * (w * z + x * y);
+    double cosy = +1.0 - 2.0 * (y * y + z * z);
+    yaw = atan2(siny, cosy);
+
+    //std::cout << "roll: " << roll * 180 / M_PI << " pitch: " << pitch * 180 / M_PI << " yaw: " << yaw * 180 / M_PI << std::endl;
+
+    if (yaw < 0) {
+        yaw = yaw + 2 * M_PI;
+    }
+
+    if (imuSource->currentFrameNo <= 0) {
+        pre_yaw = yaw;
+    }
+    else if ((imuSource->currentFrameNo) % 15 == 0) {
+        double yaw_diff = yaw - pre_yaw;
+        std::cout << yaw_diff << std::endl;
+        if (yaw_diff > M_PI / 180 * 10) {
+            robot_state = "rotating left";
+        }
+        else if (yaw_diff < M_PI / 180 * -10) {
+            robot_state = "rotating right";
+        }
+        else if (imu_msg->angular_velocity.x < 0.2 && imu_msg->angular_velocity.y < 0.2 && imu_msg->angular_velocity.z < 0.2) {
+            robot_state = "no motion";
+        }
+        pre_yaw = yaw;
+    }
+
+    //std::cout << robot_state << std::endl;
+
 	imuSource->cached_imu->R.m00 = 1-2*y*y-2*z*z;
 	imuSource->cached_imu->R.m01 = 2*x*y-2*z*w;
 	imuSource->cached_imu->R.m02 = 2*x*z+2*y*w;
@@ -64,15 +110,14 @@ void ROSEngine::processMessage(const ImageConstPtr& rgb_image_msg, const ImageCo
 	imuSource->cached_imu->R.m21 = 2*y*z+2*x*w;
 	imuSource->cached_imu->R.m22 = 1-2*x*x-2*y*y;
 //	}
-    //cout << cached_imu->R.m00 << endl;
 	imuSource->currentFrameNo++;
 }
 
 void ROSEngine::topicListenerThread()
 {
 	// subscribe to rgb and depth topics
-    message_filters::Subscriber<sensor_msgs::Image> rgb_sub_(nh_, "/camera/color/image_raw", 5);
-    message_filters::Subscriber<sensor_msgs::Image> depth_sub_(nh_, "/camera/depth/image_rect_raw", 5);
+    message_filters::Subscriber<sensor_msgs::Image> rgb_sub_(nh_, "/camera/color/image_raw", 1);
+    message_filters::Subscriber<sensor_msgs::Image> depth_sub_(nh_, "/camera/depth/image_rect_raw", 1);
 	message_filters::Subscriber<sensor_msgs::Imu> imu_sub_(nh_, "/imu", 5);
 	typedef sync_policies::ApproximateTime<sensor_msgs::Image, sensor_msgs::Image, sensor_msgs::Imu> ITAMSyncPolicy;
 	Synchronizer<ITAMSyncPolicy> sync(ITAMSyncPolicy(10), rgb_sub_, depth_sub_, imu_sub_);
@@ -91,10 +136,10 @@ ROSEngine::ROSEngine(const char *calibFilename,
 			topic_listener_thread(&ROSEngine::topicListenerThread, this) // Starts up topicListenerThread
 {
 	this->calib.disparityCalib.SetStandard(); // assumes depth is in millimeters
-	std::cout << this->calib.intrinsics_rgb.projectionParamsSimple.all << std::endl;
-	std::cout << this->calib.intrinsics_d.projectionParamsSimple.all << std::endl;
-    std::cout << this->calib.trafo_rgb_to_depth.calib << std::endl;
-    std::cout << this->calib.disparityCalib.GetParams() << std::endl;
+//	std::cout << this->calib.intrinsics_rgb.projectionParamsSimple.all << std::endl;
+//	std::cout << this->calib.intrinsics_d.projectionParamsSimple.all << std::endl;
+//    std::cout << this->calib.trafo_rgb_to_depth.calib << std::endl;
+//    std::cout << this->calib.disparityCalib.GetParams() << std::endl;
 
 //	ITMLib::readIntrinsics(src, this->calib.intrinsics_rgb);
 //	ITMLib::readIntrinsics(src, this->calib.intrinsics_d);

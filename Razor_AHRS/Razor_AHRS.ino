@@ -272,36 +272,48 @@ boolean output_errors = false;  // true or false
 // For the M0, only the extended magnetometer calibration seems to be really necessary if DEBUG__USE_DMP_M0 is set to true...
 // Accelerometer
 // "accel x,y,z (min/max) = X_MIN/X_MAX  Y_MIN/Y_MAX  Z_MIN/Z_MAX"
-float ACCEL_X_MIN = -250;
-float ACCEL_X_MAX = 250;
-float ACCEL_Y_MIN = -250;
-float ACCEL_Y_MAX = 250;
-float ACCEL_Z_MIN = -250;
-float ACCEL_Z_MAX = 250;
+float ACCEL_X_MIN = -260;
+float ACCEL_X_MAX = 260;
+float ACCEL_Y_MIN = -260;
+float ACCEL_Y_MAX = 260;
+float ACCEL_Z_MIN = 150;
+float ACCEL_Z_MAX = 260;
 
 // Magnetometer (standard calibration mode)
 // "magn x,y,z (min/max) = X_MIN/X_MAX  Y_MIN/Y_MAX  Z_MIN/Z_MAX"
-float MAGN_X_MIN = -360;
+float MAGN_X_MIN = -600;
 float MAGN_X_MAX = 600;
-float MAGN_Y_MIN = -990;
-float MAGN_Y_MAX = 5;
-float MAGN_Z_MIN = -100;
-float MAGN_Z_MAX = 430;
+float MAGN_Y_MIN = -600;
+float MAGN_Y_MAX = 600;
+float MAGN_Z_MIN = -600;
+float MAGN_Z_MAX = 600;
 
 // Magnetometer (extended calibration mode)
 // Set to true to use extended magnetometer calibration (compensates hard & soft iron errors)
 //boolean CALIBRATION__MAGN_USE_EXTENDED = false;
 //float magn_ellipsoid_center[3] = {0, 0, 0};
 //float magn_ellipsoid_transform[3][3] = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
+//HOME
 boolean CALIBRATION__MAGN_USE_EXTENDED = true;
-float magn_ellipsoid_center[3] = {96.9494, -496.163, -407.136};
-float magn_ellipsoid_transform[3][3] = {{0.952328, -0.00650863, 0.0215618}, {-0.00650863, 0.998473, 0.00863579}, {0.0215618, 0.00863579, 0.939493}};
+float magn_ellipsoid_center[3] = {339.111, -435.077, -650.828};
+float magn_ellipsoid_transform[3][3] = {{0.996503, -0.00985477, 0.00487170}, {-0.00985477, 0.947359, 0.0545952}, {0.00487170, 0.0545952, 0.926063}};
+
+//LAB
+//boolean CALIBRATION__MAGN_USE_EXTENDED = true;
+//float magn_ellipsoid_center[3] = {326.660, -496.281, -622.900};
+//float magn_ellipsoid_transform[3][3] = {{0.802685, -0.0987689, -0.0716192}, {-0.0987689, 0.693346, 0.164869}, {-0.0716192, 0.164869, 0.817372}};
+
+//MPEB 1st Floor Corridor
+//boolean CALIBRATION__MAGN_USE_EXTENDED = true;
+//float magn_ellipsoid_center[3] = {341.589, -483.516, -624.337};
+//float magn_ellipsoid_transform[3][3] = {{0.997072, -0.00730061, -0.00682034}, {-0.00730061, 0.934199, 0.0344627}, {-0.00682034, 0.0344627, 0.928455}};
+
 
 // Gyroscope
 // "gyro x,y,z (current/average) = .../OFFSET_X  .../OFFSET_Y  .../OFFSET_Z
-float GYRO_AVERAGE_OFFSET_X = 0.0;
+float GYRO_AVERAGE_OFFSET_X = -0.01;
 float GYRO_AVERAGE_OFFSET_Y = 0.0;
-float GYRO_AVERAGE_OFFSET_Z = 0.0;
+float GYRO_AVERAGE_OFFSET_Z = 0.01;
 
 /*
 // Calibration example:
@@ -572,7 +584,7 @@ void reset_sensor_fusion() {
   // GET PITCH
   // Using y-z-plane-component/x-component of gravity vector
   pitch = -atan2(accel[0], sqrt(accel[1] * accel[1] + accel[2] * accel[2]));
-	
+  
   // GET ROLL
   // Compensate pitch of gravity vector 
   Vector_Cross_Product(temp1, accel, xAxis);
@@ -816,7 +828,7 @@ void loop()
          LOG_PORT.print("GYRO_AVERAGE_OFFSET_Y:");LOG_PORT.println(GYRO_AVERAGE_OFFSET_Y);
          LOG_PORT.print("GYRO_AVERAGE_OFFSET_Z:");LOG_PORT.println(GYRO_AVERAGE_OFFSET_Z);
       }
-	  else if (command == 'c') // Set _i_nput mode
+    else if (command == 'c') // Set _i_nput mode
       {
         char input_param = readChar();
         if (input_param == 'a')  // Calibrate _a_ccelerometer
@@ -937,15 +949,15 @@ void loop()
               GYRO_AVERAGE_OFFSET_Z = value_param;
         }
       }
-	  else if (command == 'I') // Toggle _i_nertial-only mode for yaw computation
-	  {
-		DEBUG__NO_DRIFT_CORRECTION = !DEBUG__NO_DRIFT_CORRECTION;
+    else if (command == 'I') // Toggle _i_nertial-only mode for yaw computation
+    {
+    DEBUG__NO_DRIFT_CORRECTION = !DEBUG__NO_DRIFT_CORRECTION;
 #if DEBUG__USE_ONLY_DMP_M0 == true
-		// Update reference for yaw...
-		initialmagyaw = -MAG_Heading;
-		initialimuyaw = imu.yaw*PI/180.0f;
+    // Update reference for yaw...
+    initialmagyaw = -MAG_Heading;
+    initialimuyaw = imu.yaw*PI/180.0f;
 #endif // DEBUG__USE_ONLY_DMP_M0
-	  }
+    }
 #if OUTPUT__HAS_RN_BLUETOOTH == true
       // Read messages from bluetooth module
       // For this to work, the connect/disconnect message prefix of the module has to be set to "#".
@@ -986,7 +998,7 @@ void loop()
       compensate_sensor_errors();
 
 #if DEBUG__USE_ONLY_DMP_M0 == true
-	  Euler_angles_only_DMP_M0();
+    Euler_angles_only_DMP_M0();
 #else
       // Run DCM algorithm
       Compass_Heading(); // Calculate magnetic heading
@@ -1004,7 +1016,7 @@ void loop()
       compensate_sensor_errors();
     
 #if DEBUG__USE_ONLY_DMP_M0 == true
-	  Euler_angles_only_DMP_M0();
+    Euler_angles_only_DMP_M0();
 #else
       // Run DCM algorithm
       Compass_Heading(); // Calculate magnetic heading
@@ -1037,7 +1049,7 @@ void loop()
 #if DEBUG__ADD_LOOP_DELAY == true
   else
   {
-	delay(DEBUG__LOOP_DELAY);
+  delay(DEBUG__LOOP_DELAY);
   }
 #endif // DEBUG__ADD_LOOP_DELAY
 #endif

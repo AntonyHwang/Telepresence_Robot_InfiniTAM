@@ -66,7 +66,7 @@ namespace ITMLib
 		void SetStandard()
 		{
 			// standard calibration parameters - converts mm to metres by dividing by 1000
-			SetFrom(1.0f / 1000.0f, 0.0f, TRAFO_AFFINE);
+			SetFrom(0.001, 0.001  , TRAFO_AFFINE);
 		}
 	};
 }

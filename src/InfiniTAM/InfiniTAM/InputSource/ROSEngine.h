@@ -38,6 +38,9 @@ private:
 	ITMShortImage depth_image_;
 	std::thread topic_listener_thread;
 	std::mutex images_mutex_;
+	std::string robot_state;
+	double pre_yaw = 0;
+
 
 public:
 	ROSEngine(const char *calibFilename, 

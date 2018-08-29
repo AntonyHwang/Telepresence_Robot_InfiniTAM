@@ -30,7 +30,7 @@ ITMLibSettings::ITMLibSettings(void)
 	//deviceType = DEVICE_CPU;
 
 	/// how swapping works: disabled, fully enabled (still with dragons) and delete what's not visible - not supported in loop closure version
-	swappingMode = SWAPPINGMODE_DISABLED;
+	swappingMode = SWAPPINGMODE_ENABLED;
 
 	/// enables or disables approximate raycast
 	useApproximateRaycast = false;
@@ -45,10 +45,10 @@ ITMLibSettings::ITMLibSettings(void)
 	libMode = LIBMODE_BASIC;
 	//libMode = LIBMODE_BASIC_SURFELS;
 
-	//// Default ICP tracking
-//	trackerConfig = "type=icp,levels=rrrbb,minstep=1e-3,"
-//					"outlierC=0.01,outlierF=0.002,"
-//					"numiterC=10,numiterF=2,failureDec=5.0"; // 5 for normal, 20 for loop closure
+	// Default ICP tracking
+/*	trackerConfig = "type=icp,levels=rrrbb,minstep=1e-3,"
+					"outlierC=0.01,outlierF=0.002,"
+					"numiterC=10,numiterF=2,failureDec=20.0"; // 5 for normal, 20 for loop closure*/
 
 	// Depth-only extended tracker:
 	trackerConfig = "type=extended,levels=rrbb,useDepth=1,minstep=1e-4,"
@@ -68,7 +68,7 @@ ITMLibSettings::ITMLibSettings(void)
 	//trackerConfig = "type=rgb,levels=rrbb";
 
 	//trackerConfig = "type=imuicp,levels=tb,minstep=1e-3,outlierC=0.01,outlierF=0.005,numiterC=4,numiterF=2";
-	//trackerConfig = "type=extendedimu,levels=ttb,minstep=5e-4,outlierSpaceC=0.1,outlierSpaceF=0.004,numiterC=20,numiterF=5,tukeyCutOff=8,framesToSkip=20,framesToWeight=50,failureDec=20.0";
+//	trackerConfig = "type=extendedimu,levels=ttb,minstep=5e-4,outlierSpaceC=0.1,outlierSpaceF=0.004,numiterC=20,numiterF=5,tukeyCutOff=8,framesToSkip=20,framesToWeight=50,failureDec=20.0";
 
 	// Surfel tracking
 	if(libMode == LIBMODE_BASIC_SURFELS)
