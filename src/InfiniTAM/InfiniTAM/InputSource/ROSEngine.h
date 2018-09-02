@@ -40,6 +40,7 @@ private:
 	std::mutex images_mutex_;
 	std::string robot_state;
 	double pre_yaw = 0;
+	double pre_t = 0;
 
 
 public:

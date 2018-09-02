@@ -272,12 +272,12 @@ boolean output_errors = false;  // true or false
 // For the M0, only the extended magnetometer calibration seems to be really necessary if DEBUG__USE_DMP_M0 is set to true...
 // Accelerometer
 // "accel x,y,z (min/max) = X_MIN/X_MAX  Y_MIN/Y_MAX  Z_MIN/Z_MAX"
-float ACCEL_X_MIN = -260;
-float ACCEL_X_MAX = 260;
-float ACCEL_Y_MIN = -260;
-float ACCEL_Y_MAX = 260;
-float ACCEL_Z_MIN = 150;
-float ACCEL_Z_MAX = 260;
+float ACCEL_X_MIN = -250;
+float ACCEL_X_MAX = 250;
+float ACCEL_Y_MIN = -250;
+float ACCEL_Y_MAX = 250;
+float ACCEL_Z_MIN = -250;
+float ACCEL_Z_MAX = 250;
 
 // Magnetometer (standard calibration mode)
 // "magn x,y,z (min/max) = X_MIN/X_MAX  Y_MIN/Y_MAX  Z_MIN/Z_MAX"
@@ -294,9 +294,9 @@ float MAGN_Z_MAX = 600;
 //float magn_ellipsoid_center[3] = {0, 0, 0};
 //float magn_ellipsoid_transform[3][3] = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
 //HOME
-boolean CALIBRATION__MAGN_USE_EXTENDED = true;
-float magn_ellipsoid_center[3] = {339.111, -435.077, -650.828};
-float magn_ellipsoid_transform[3][3] = {{0.996503, -0.00985477, 0.00487170}, {-0.00985477, 0.947359, 0.0545952}, {0.00487170, 0.0545952, 0.926063}};
+//boolean CALIBRATION__MAGN_USE_EXTENDED = true;
+//float magn_ellipsoid_center[3] = {339.111, -435.077, -650.828};
+//float magn_ellipsoid_transform[3][3] = {{0.996503, -0.00985477, 0.00487170}, {-0.00985477, 0.947359, 0.0545952}, {0.00487170, 0.0545952, 0.926063}};
 
 //LAB
 //boolean CALIBRATION__MAGN_USE_EXTENDED = true;
@@ -308,6 +308,10 @@ float magn_ellipsoid_transform[3][3] = {{0.996503, -0.00985477, 0.00487170}, {-0
 //float magn_ellipsoid_center[3] = {341.589, -483.516, -624.337};
 //float magn_ellipsoid_transform[3][3] = {{0.997072, -0.00730061, -0.00682034}, {-0.00730061, 0.934199, 0.0344627}, {-0.00682034, 0.0344627, 0.928455}};
 
+//HOME1
+boolean CALIBRATION__MAGN_USE_EXTENDED = true;
+float magn_ellipsoid_center[3] = {-112.589, -474.339, -502.132};
+float magn_ellipsoid_transform[3][3] = {{0.941456, 0.00699288, 0.00523861}, {0.00699288, 0.977762, 0.0245577}, {0.00523861, 0.0245577, 0.969899}};
 
 // Gyroscope
 // "gyro x,y,z (current/average) = .../OFFSET_X  .../OFFSET_Y  .../OFFSET_Z
