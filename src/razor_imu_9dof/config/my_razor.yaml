@@ -37,9 +37,13 @@ magn_z_max: 600.0
 #magn_ellipsoid_transform: [[0.997072, -0.00730061, -0.00682034], [-0.00730061, 0.934199, 0.0344627], [-0.00682034, 0.0344627, 0.928455]]
 
 #HOME1
+#calibration_magn_use_extended: true
+#magn_ellipsoid_center: [-112.589, -474.339, -502.132]
+#magn_ellipsoid_transform: [[0.941456, 0.00699288, 0.00523861], [0.00699288, 0.977762, 0.0245577], [0.00523861, 0.0245577, 0.969899]]
+
 calibration_magn_use_extended: true
-magn_ellipsoid_center: [-112.589, -474.339, -502.132]
-magn_ellipsoid_transform: [[0.941456, 0.00699288, 0.00523861], [0.00699288, 0.977762, 0.0245577], [0.00523861, 0.0245577, 0.969899]]
+magn_ellipsoid_center: [-133.789, -427.062, -588.824]
+magn_ellipsoid_transform: [[0.827898, 0.0444361, 0.0185851], [0.0444361, 0.955654, 0.0931553], [0.0185851, 0.0931553, 0.706110]]
 
 
 # AHRS to robot calibration
