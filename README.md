@@ -52,7 +52,7 @@ Follow the calibration guide for the Razor IMU at http://wiki.ros.org/razor_imu_
   - Update calibration file located at Telepresence_Robot_InfiniTAM/calib_files/calib.txt
     camera calibration paramters are published by the camera node
     
-###1.3 ROS Network Setup
+### 1.3 ROS Network Setup
 
   To setup the ROS connections, use the following command lines:
   - Robot (NUC):
@@ -67,7 +67,7 @@ Follow the calibration guide for the Razor IMU at http://wiki.ros.org/razor_imu_
 ```
 
 
-###1.4 Build Process
+### 1.4 Build Process
 
   To compile the system on the robot, use the standard catkin approach:
 ```
