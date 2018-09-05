@@ -41,6 +41,7 @@ private:
 	std::string robot_state;
 	double pre_yaw = 0;
 	double pre_t = 0;
+	double avg_x_accel = 0;
 
 
 public:

@@ -34,19 +34,6 @@ void ROSEngine::processMessage(const ImageConstPtr& rgb_image_msg, const ImageCo
 		depth[i] = depth_msg_data[i];
 	}
 
-//	bool bUsedCache = false;
-//
-//	if (cached_imu != NULL)
-//	{
-//		imu->R = cached_imu->R;
-//		delete cached_imu;
-//		cached_imu = NULL;
-//		bUsedCache = true;
-//	}
-//
-//	if (!bUsedCache) {
-//		//load into cache
-
 	imuSource->cached_imu = new ITMIMUMeasurement();
 
 	float x = imu_msg->orientation.x;
@@ -79,32 +66,51 @@ void ROSEngine::processMessage(const ImageConstPtr& rgb_image_msg, const ImageCo
     if (yaw < 0) {
         yaw = yaw + 2 * M_PI;
     }
+
     double t = double(imu_msg->header.stamp.sec) + double(imu_msg->header.stamp.nsec) * 1e-9;
-    if (imuSource->currentFrameNo <= 0) {
+
+	if (imuSource->currentFrameNo <= 0) {
         pre_yaw = yaw;
         pre_t = t;
+		avg_x_accel = imu_msg->linear_acceleration.x;
     }
-    else if ((t - pre_t) >= 0.2){
-//        double yaw_diff = yaw - pre_yaw;
-//        //   std::cout << yaw_diff << std::endl;
-//        if (yaw_diff > M_PI / 180 * 10) {
-//            robot_state = "rotating left";
-//        }
-//        else if (yaw_diff < M_PI / 180 * -10) {
-//            robot_state = "rotating right";
-//        }
+    else if ((t - pre_t) >= 0.4){
+        double yaw_diff = yaw - pre_yaw;
+        //   std::cout << yaw_diff << std::endl;
+        if (yaw_diff > M_PI / 180 * 8) {
+            robot_state = "rotating left";
+        }
+        else if (yaw_diff < M_PI / 180 * -8) {
+            robot_state = "rotating right";
+        }
+        else if ((avg_x_accel - imu_msg->linear_acceleration.x) < -0.2) {
+			robot_state = "forward";
+        }
+		else if ((avg_x_accel - imu_msg->linear_acceleration.x) > 0.2) {
+			robot_state = "reverse";
+		}
+		else {
+			robot_state = "no motion";
+        }
 //        else if (imu_msg->angular_velocity.y <= -0.35) {
 //            robot_state = "forward";
 //        }
 //        else if (abs(imu_msg->angular_velocity.x) < 0.2 && abs(imu_msg->angular_velocity.y) < 0.2 && abs(imu_msg->angular_velocity.z < 0.2)) {
 //            robot_state = "no motion";
 //        }
-//        std::cout << "motion: " << robot_state << std::endl;
-//        std::cout << "vel.y: " << imu_msg->angular_velocity.y << std::endl;
-//        std::cout << "yaw: " << yaw_diff << std::endl;
-//        pre_yaw = yaw;
-//        pre_t = t;
+        std::cout << "motion: " << robot_state << std::endl;
+        std::cout << "vel.y: " << imu_msg->angular_velocity.y << std::endl;
+        std::cout << "yaw: " << yaw_diff << std::endl;
+        std::cout << "accel: " << imu_msg->linear_acceleration.x << std::endl;
+        std::cout << "avg_accel: " << avg_x_accel << std::endl;
+        pre_yaw = yaw;
+        pre_t = t;
+        avg_x_accel = imu_msg->linear_acceleration.x;
     }
+    else {
+        avg_x_accel = (avg_x_accel + imu_msg->linear_acceleration.x) / 2;
+	}
+
 
 //    std::cout << robot_state << std::endl;
 
@@ -126,8 +132,8 @@ void ROSEngine::topicListenerThread()
 {
 	// subscribe to rgb and depth topics
     message_filters::Subscriber<sensor_msgs::Image> rgb_sub_(nh_, "/camera/color/image_raw", 1);
-    //message_filters::Subscriber<sensor_msgs::Image> depth_sub_(nh_, "/camera/depth/image_rect_raw", 1);
-    message_filters::Subscriber<sensor_msgs::Image> depth_sub_(nh_, "/camera/aligned_depth_to_color/image_raw", 1);
+    message_filters::Subscriber<sensor_msgs::Image> depth_sub_(nh_, "/camera/depth/image_rect_raw", 1);
+    //message_filters::Subscriber<sensor_msgs::Image> depth_sub_(nh_, "/camera/aligned_depth_to_color/image_raw", 1);
 	message_filters::Subscriber<sensor_msgs::Imu> imu_sub_(nh_, "/imu", 5);
 	typedef sync_policies::ApproximateTime<sensor_msgs::Image, sensor_msgs::Image, sensor_msgs::Imu> ITAMSyncPolicy;
 	Synchronizer<ITAMSyncPolicy> sync(ITAMSyncPolicy(10), rgb_sub_, depth_sub_, imu_sub_);
