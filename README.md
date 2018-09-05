@@ -13,9 +13,9 @@ For more information about InfiniTAM please visit the project website <http://ww
 Hardware
 
   - Robot
-    Intel RealSense D435 Camera (IMU case CAD File at Telepresence_Robot_InfiniTAM/cad_files/)
-    SparkFun 9DoF Razor IMU M0 - SEN-14001
-    Linux 16.04
+  - Intel RealSense D435 Camera (IMU case CAD File at Telepresence_Robot_InfiniTAM/cad_files/)
+  - SparkFun 9DoF Razor IMU M0 - SEN-14001
+  - Linux 16.04
   
   - GPU Enabled PC
 
