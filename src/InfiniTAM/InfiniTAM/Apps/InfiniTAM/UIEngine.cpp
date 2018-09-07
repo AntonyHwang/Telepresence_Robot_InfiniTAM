@@ -663,32 +663,35 @@ void UIEngine::ProcessFrame()
 	ITMTrackingState::TrackingResult trackerResult;
 	//actual processing on the mailEngine
 //    trackerResult = mainEngine->ProcessFrame(inputRGBImage, inputRawDepthImage);
-	trackerResult = mainEngine->ProcessFrame(inputRGBImage, inputRawDepthImage, inputIMUMeasurement);
-	trackingResult = (int)trackerResult;
 
-    std::ofstream res_file;
-    res_file.open("Results/tracking_results.txt", std::ios_base::app);
-	ORUtils::Matrix4<float> pose = mainEngine->GetTrackingState()->pose_d->GetInvM();
-	double rotation[9], q[4];
-	for(size_t i=0;i<9;i++) rotation[i] = pose.m[(i%3)*4 + (i/3)];
-	MiniSlamGraph::QuaternionHelpers::QuaternionFromRotationMatrix(rotation, q);
-    //std::cout << pose.m[12] << " " << pose.m[13] << " " << pose.m[14] << std::endl;
+    if (imuSource->state == "no motion") {
 
-    res_file  << currentFrameNo
-			  << " " << pose.m[12] << " " << pose.m[13] << " " << pose.m[14]
-			  << " " << q[1] << " " << q[2] << " " << q[3] << " " << q[0] << std::endl;
-//	std::cout << currentFrameNo << std::endl;
-//    std::cout << "pose " << q[1] << " " << q[2] << " " << q[3] << " " << q[0] << std::endl;
+    }
+    else {
+        //process only motion detected
+        trackerResult = mainEngine->ProcessFrame(inputRGBImage, inputRawDepthImage, inputIMUMeasurement);
+        trackingResult = (int)trackerResult;
 
-#ifndef COMPILE_WITHOUT_CUDA
-	ORcudaSafeCall(cudaThreadSynchronize());
-#endif
-	sdkStopTimer(&timer_instant); sdkStopTimer(&timer_average);
+        std::ofstream res_file;
+        res_file.open("Results/tracking_results.txt", std::ios_base::app);
+        ORUtils::Matrix4<float> pose = mainEngine->GetTrackingState()->pose_d->GetInvM();
+        double rotation[9], q[4];
+        for(size_t i=0;i<9;i++) rotation[i] = pose.m[(i%3)*4 + (i/3)];
+        MiniSlamGraph::QuaternionHelpers::QuaternionFromRotationMatrix(rotation, q);
 
-	//processedTime = sdkGetTimerValue(&timer_instant);
-	processedTime = sdkGetAverageTimerValue(&timer_average);
+        res_file  << currentFrameNo
+                  << " " << pose.m[12] << " " << pose.m[13] << " " << pose.m[14]
+                  << " " << q[1] << " " << q[2] << " " << q[3] << " " << q[0] << std::endl;
 
-	currentFrameNo++;
+        #ifndef COMPILE_WITHOUT_CUDA
+                ORcudaSafeCall(cudaThreadSynchronize());
+        #endif
+        sdkStopTimer(&timer_instant); sdkStopTimer(&timer_average);
+
+        processedTime = sdkGetAverageTimerValue(&timer_average);
+
+        currentFrameNo++;
+    }
 }
 
 void UIEngine::Run() { glutMainLoop(); }

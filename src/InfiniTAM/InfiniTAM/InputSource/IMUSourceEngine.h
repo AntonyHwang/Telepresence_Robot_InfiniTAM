@@ -18,6 +18,7 @@ public:
 	//void loadIMUIntoCache();
 	int cachedFrameNo;
 	int currentFrameNo;
+	std::string state;
 
 	bool hasMoreMeasurements(void);
 	void getMeasurement(ITMLib::ITMIMUMeasurement *imu);

@@ -11,6 +11,53 @@ using namespace sensor_msgs;
 using namespace message_filters;
 using namespace ITMLib;
 
+std::vector<double> qToRPY(std::vector<double> q) {
+    double x = q[0];
+    double y = q[1];
+    double z = q[2];
+    double w = q[3];
+    std::vector<double> rpy = {0, 0, 0};
+
+    double sinr = +2.0 * (w * x + y * z);
+    double cosr = +1.0 - 2.0 * (x * x + y * y);
+    rpy[0] = atan2(sinr, cosr);
+
+    // pitch (y-axis rotation)
+    double sinp = +2.0 * (w * y - z * x);
+    if (fabs(sinp) >= 1) {
+        rpy[1] = copysign(M_PI / 2, sinp); // use 90 degrees if out of range
+    }
+    else {
+        rpy[1] = asin(sinp);
+    }
+
+    // yaw (z-axis rotation)
+    double siny = +2.0 * (w * z + x * y);
+    double cosy = +1.0 - 2.0 * (y * y + z * z);
+    rpy[2] = atan2(siny, cosy);
+
+    return rpy;
+}
+
+std::vector<double> rpyToQ(std::vector<double> rpy) {
+    std::vector<double> q = {0, 0, 0, 0};
+    double roll = rpy[0];
+    double pitch = rpy[1];
+    double yaw = rpy[2];
+    double t0 = std::cos(yaw * 0.5f);
+    double t1 = std::sin(yaw * 0.5f);
+    double t2 = std::cos(roll * 0.5f);
+    double t3 = std::sin(roll * 0.5f);
+    double t4 = std::cos(pitch * 0.5f);
+    double t5 = std::sin(pitch * 0.5f);
+
+    q[3] = t0 * t2 * t4 + t1 * t3 * t5;
+    q[0] = t0 * t3 * t4 - t1 * t2 * t5;
+    q[1] = t0 * t2 * t5 + t1 * t3 * t4;
+    q[2] = t1 * t2 * t4 - t0 * t3 * t5;
+    return q;
+}
+
 void ROSEngine::processMessage(const ImageConstPtr& rgb_image_msg, const ImageConstPtr& depth_image_msg, const ImuConstPtr& imu_msg)
 {
 	std::lock_guard<std::mutex> process_message_lock(images_mutex_);
@@ -36,32 +83,15 @@ void ROSEngine::processMessage(const ImageConstPtr& rgb_image_msg, const ImageCo
 
 	imuSource->cached_imu = new ITMIMUMeasurement();
 
-	float x = imu_msg->orientation.x;
-	float y = imu_msg->orientation.y;
-	float z = imu_msg->orientation.z;
-	float w = imu_msg->orientation.w;
+	std::vector<double> quaternion = {0, 0, 0, 0};
+	quaternion[0] = (imu_msg->orientation.x);
+    quaternion[1] = (imu_msg->orientation.y);
+    quaternion[2] = (imu_msg->orientation.z);
+    quaternion[3] = (imu_msg->orientation.w);
+    //convert quaternion to euler
+    std::vector<double> rpy = qToRPY(quaternion);
 
-	double roll, pitch, yaw;
-    // roll (x-axis rotation)
-    double sinr = +2.0 * (w * x + y * z);
-    double cosr = +1.0 - 2.0 * (x * x + y * y);
-    roll = atan2(sinr, cosr);
-
-    // pitch (y-axis rotation)
-    double sinp = +2.0 * (w * y - z * x);
-    if (fabs(sinp) >= 1) {
-        pitch = copysign(M_PI / 2, sinp); // use 90 degrees if out of range
-    }
-    else {
-        pitch = asin(sinp);
-    }
-
-    // yaw (z-axis rotation)
-    double siny = +2.0 * (w * z + x * y);
-    double cosy = +1.0 - 2.0 * (y * y + z * z);
-    yaw = atan2(siny, cosy);
-
-    //std::cout << "roll: " << roll * 180 / M_PI << " pitch: " << pitch * 180 / M_PI << " yaw: " << yaw * 180 / M_PI << std::endl;
+	double yaw = rpy[2];
 
     if (yaw < 0) {
         yaw = yaw + 2 * M_PI;
@@ -74,45 +104,53 @@ void ROSEngine::processMessage(const ImageConstPtr& rgb_image_msg, const ImageCo
         pre_t = t;
 		avg_x_accel = imu_msg->linear_acceleration.x;
     }
-    else if ((t - pre_t) >= 0.4){
+    else if ((t - pre_t) >= 0.1){
+	    //detect robot motion
+        avg_x_accel = (avg_x_accel + imu_msg->linear_acceleration.x) / 2;
         double yaw_diff = yaw - pre_yaw;
-        //   std::cout << yaw_diff << std::endl;
-        if (yaw_diff > M_PI / 180 * 8) {
-            robot_state = "rotating left";
+        double accel_diff = avg_x_accel - pre_avg_x_accel;
+
+        if ((accel_diff < -0.1 || accel_diff > 0.1) && abs(yaw_diff) < M_PI / 180 * 5){
+            imuSource->state = "forward/reverse";
         }
-        else if (yaw_diff < M_PI / 180 * -8) {
-            robot_state = "rotating right";
+        else if (yaw_diff > M_PI / 180 * 1) {
+            imuSource->state = "left";
         }
-        else if ((avg_x_accel - imu_msg->linear_acceleration.x) < -0.2) {
-			robot_state = "forward";
+        else if (yaw_diff < M_PI / 180 * -1) {
+            imuSource->state = "right";
         }
-		else if ((avg_x_accel - imu_msg->linear_acceleration.x) > 0.2) {
-			robot_state = "reverse";
-		}
 		else {
-			robot_state = "no motion";
+            imuSource->state = "no motion";
         }
-//        else if (imu_msg->angular_velocity.y <= -0.35) {
-//            robot_state = "forward";
-//        }
-//        else if (abs(imu_msg->angular_velocity.x) < 0.2 && abs(imu_msg->angular_velocity.y) < 0.2 && abs(imu_msg->angular_velocity.z < 0.2)) {
-//            robot_state = "no motion";
-//        }
-        std::cout << "motion: " << robot_state << std::endl;
-        std::cout << "vel.y: " << imu_msg->angular_velocity.y << std::endl;
-        std::cout << "yaw: " << yaw_diff << std::endl;
-        std::cout << "accel: " << imu_msg->linear_acceleration.x << std::endl;
-        std::cout << "avg_accel: " << avg_x_accel << std::endl;
         pre_yaw = yaw;
         pre_t = t;
-        avg_x_accel = imu_msg->linear_acceleration.x;
     }
     else {
         avg_x_accel = (avg_x_accel + imu_msg->linear_acceleration.x) / 2;
 	}
+    pre_avg_x_accel = avg_x_accel;
 
+	if (imuSource->state == "left" || imuSource->state == "right") {
+        //constraint pitch roll
+        rpy[0] = pre_rpy[0];
+        rpy[1] = pre_rpy[1];
+	}
+	else if (imuSource->state == "forward" || imuSource->state == "reverse") {
+	    //contraint roll yaw
+        rpy[2] = pre_rpy[0];
+        rpy[2] = pre_rpy[2];
+	}
+	else if (imuSource->state == "no motion") {
+        rpy = pre_rpy;
+	}
+	pre_rpy = rpy;
+    //convert euler to quaternion
+	quaternion = rpyToQ(rpy);
 
-//    std::cout << robot_state << std::endl;
+    double x = quaternion[0];
+    double y = quaternion[1];
+    double z = quaternion[2];
+    double w = quaternion[3];
 
 	imuSource->cached_imu->R.m00 = 1-2*y*y-2*z*z;
 	imuSource->cached_imu->R.m01 = 2*x*y-2*z*w;
@@ -123,9 +161,6 @@ void ROSEngine::processMessage(const ImageConstPtr& rgb_image_msg, const ImageCo
 	imuSource->cached_imu->R.m20 = 2*x*z-2*y*w;
 	imuSource->cached_imu->R.m21 = 2*y*z+2*x*w;
 	imuSource->cached_imu->R.m22 = 1-2*x*x-2*y*y;
-//	}
-//    std::cout << imuSource->currentFrameNo << std::endl;
-//    std::cout << imu_msg->angular_velocity.x << " " << imu_msg->angular_velocity.y << " " << imu_msg->angular_velocity.z << std::endl;
 }
 
 void ROSEngine::topicListenerThread()
