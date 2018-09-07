@@ -45,6 +45,7 @@ ITMLibSettings::ITMLibSettings(void)
 	libMode = LIBMODE_BASIC;
 	//libMode = LIBMODE_BASIC_SURFELS;
 
+<<<<<<< HEAD
 	//// Default ICP tracking
 /*	trackerConfig = "type=icp,levels=rrrbb,minstep=1e-3,"
 					"outlierC=0.01,outlierF=0.002,"
@@ -63,12 +64,32 @@ ITMLibSettings::ITMLibSettings(void)
 					  "outlierSpaceC=0.1,outlierSpaceF=0.004,"
 					  "numiterC=20,numiterF=50,tukeyCutOff=8,"
 					  "framesToSkip=5,framesToWeight=50,failureDec=20.0";
+=======
+	// Default ICP tracking
+//	trackerConfig = "type=icp,levels=rrrbb,minstep=1e-3,"
+//					"outlierC=0.01,outlierF=0.002,"
+//					"numiterC=10,numiterF=2,failureDec=20.0"; // 5 for normal, 20 for loop closure
+
+	// Depth-only extended tracker:
+//	trackerConfig = "type=extended,levels=rrbb,useDepth=1,minstep=1e-4,"
+//					  "outlierSpaceC=0.1,outlierSpaceF=0.004,"
+//					  "numiterC=20,numiterF=50,tukeyCutOff=8,"
+//					  "framesToSkip=20,framesToWeight=50,failureDec=20.0";
+
+	//// For hybrid intensity+depth tracking:
+//	trackerConfig = "type=extended,levels=bbb,useDepth=1,useColour=1,"
+//					  "colourWeight=0.3,minstep=1e-4,"
+//					  "outlierColourC=0.175,outlierColourF=0.005,"
+//					  "outlierSpaceC=0.1,outlierSpaceF=0.004,"
+//					  "numiterC=20,numiterF=50,tukeyCutOff=8,"
+//					  "framesToSkip=20,framesToWeight=50,failureDec=20.0";
+>>>>>>> develop
 
 	// Colour only tracking, using rendered colours
-	//trackerConfig = "type=rgb,levels=rrbb";
+//	trackerConfig = "type=rgb,levels=rrbb";
 
-	//trackerConfig = "type=imuicp,levels=tb,minstep=1e-3,outlierC=0.01,outlierF=0.005,numiterC=4,numiterF=2";
-	//trackerConfig = "type=extendedimu,levels=ttb,minstep=5e-4,outlierSpaceC=0.1,outlierSpaceF=0.004,numiterC=20,numiterF=5,tukeyCutOff=8,framesToSkip=20,framesToWeight=50,failureDec=20.0";
+//	trackerConfig = "type=imuicp,levels=tb,minstep=1e-3,outlierC=0.01,outlierF=0.005,numiterC=4,numiterF=2";
+    trackerConfig = "type=extendedimu,levels=ttb,minstep=5e-4,outlierSpaceC=0.1,outlierSpaceF=0.004,numiterC=20,numiterF=5,tukeyCutOff=8,framesToSkip=20,framesToWeight=50,failureDec=5.0";
 
 	// Surfel tracking
 	if(libMode == LIBMODE_BASIC_SURFELS)

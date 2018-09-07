@@ -628,11 +628,19 @@ void UIEngine::ProcessFrame()
 {
 	if (!imageSource->hasMoreImages()) return;
 	imageSource->getImages(inputRGBImage, inputRawDepthImage);
+<<<<<<< HEAD
 
 	if (imuSource != NULL) {
 		if (!imuSource->hasMoreMeasurements()) return;
 		else imuSource->getMeasurement(inputIMUMeasurement);
 	}
+=======
+    imuSource->getMeasurement(inputIMUMeasurement);
+//	if (imuSource != NULL) {
+//		if (!imuSource->hasMoreMeasurements()) return;
+//		else imuSource->getMeasurement(inputIMUMeasurement);
+//	}
+>>>>>>> develop
 	//std::cout << "reached" << std::endl;
 	//std::cout << inputIMUMeasurement->R << std::endl;
 
@@ -662,6 +670,7 @@ void UIEngine::ProcessFrame()
 
 	ITMTrackingState::TrackingResult trackerResult;
 	//actual processing on the mailEngine
+<<<<<<< HEAD
 //	if (imuSource != NULL) trackerResult = mainEngine->ProcessFrame(inputRGBImage, inputRawDepthImage, inputIMUMeasurement);
 //	else trackerResult = mainEngine->ProcessFrame(inputRGBImage, inputRawDepthImage);
 	trackerResult = mainEngine->ProcessFrame(inputRGBImage, inputRawDepthImage, inputIMUMeasurement);
@@ -681,11 +690,38 @@ void UIEngine::ProcessFrame()
 	ORcudaSafeCall(cudaThreadSynchronize());
 #endif
 	sdkStopTimer(&timer_instant); sdkStopTimer(&timer_average);
+=======
+//    trackerResult = mainEngine->ProcessFrame(inputRGBImage, inputRawDepthImage);
 
-	//processedTime = sdkGetTimerValue(&timer_instant);
-	processedTime = sdkGetAverageTimerValue(&timer_average);
+    if (imuSource->state == "no motion") {
 
-	currentFrameNo++;
+    }
+    else {
+        //process only motion detected
+        trackerResult = mainEngine->ProcessFrame(inputRGBImage, inputRawDepthImage, inputIMUMeasurement);
+        trackingResult = (int)trackerResult;
+
+        std::ofstream res_file;
+        res_file.open("Results/tracking_results.txt", std::ios_base::app);
+        ORUtils::Matrix4<float> pose = mainEngine->GetTrackingState()->pose_d->GetInvM();
+        double rotation[9], q[4];
+        for(size_t i=0;i<9;i++) rotation[i] = pose.m[(i%3)*4 + (i/3)];
+        MiniSlamGraph::QuaternionHelpers::QuaternionFromRotationMatrix(rotation, q);
+
+        res_file  << currentFrameNo
+                  << " " << pose.m[12] << " " << pose.m[13] << " " << pose.m[14]
+                  << " " << q[1] << " " << q[2] << " " << q[3] << " " << q[0] << std::endl;
+
+        #ifndef COMPILE_WITHOUT_CUDA
+                ORcudaSafeCall(cudaThreadSynchronize());
+        #endif
+        sdkStopTimer(&timer_instant); sdkStopTimer(&timer_average);
+>>>>>>> develop
+
+        processedTime = sdkGetAverageTimerValue(&timer_average);
+
+        currentFrameNo++;
+    }
 }
 
 void UIEngine::Run() { glutMainLoop(); }

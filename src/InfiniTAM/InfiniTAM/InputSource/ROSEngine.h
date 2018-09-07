@@ -22,6 +22,7 @@
 #include <image_transport/image_transport.h>
 #include <cv_bridge/cv_bridge.h>
 #include <sensor_msgs/image_encodings.h>
+#include <vector>
 
 #if (!defined USING_CMAKE) && (defined _MSC_VER)
 #pragma comment(lib, "OpenNI2")
@@ -38,6 +39,12 @@ private:
 	ITMShortImage depth_image_;
 	std::thread topic_listener_thread;
 	std::mutex images_mutex_;
+	double pre_yaw = 0;
+	double pre_t = 0;
+	double pre_avg_x_accel = 0;
+	double avg_x_accel = 0;
+    std::vector<double> pre_rpy = {0, 0, 0};
+
 
 public:
 	ROSEngine(const char *calibFilename, 

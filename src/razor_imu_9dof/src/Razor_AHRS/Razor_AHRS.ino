@@ -293,19 +293,35 @@ float MAGN_Z_MAX = 600;
 //boolean CALIBRATION__MAGN_USE_EXTENDED = false;
 //float magn_ellipsoid_center[3] = {0, 0, 0};
 //float magn_ellipsoid_transform[3][3] = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
+//HOME
 //boolean CALIBRATION__MAGN_USE_EXTENDED = true;
-//float magn_ellipsoid_center[3] = {126.801, -461.666, -402.417};
-//float magn_ellipsoid_transform[3][3] = {{0.994508, -0.0140238, 0.0187158}, {-0.0140238, 0.958950, 0.0366377}, {0.0187158, 0.0366377, 0.912487}};
+//float magn_ellipsoid_center[3] = {339.111, -435.077, -650.828};
+//float magn_ellipsoid_transform[3][3] = {{0.996503, -0.00985477, 0.00487170}, {-0.00985477, 0.947359, 0.0545952}, {0.00487170, 0.0545952, 0.926063}};
+
+//LAB
+//boolean CALIBRATION__MAGN_USE_EXTENDED = true;
+//float magn_ellipsoid_center[3] = {326.660, -496.281, -622.900};
+//float magn_ellipsoid_transform[3][3] = {{0.802685, -0.0987689, -0.0716192}, {-0.0987689, 0.693346, 0.164869}, {-0.0716192, 0.164869, 0.817372}};
+
+//MPEB 1st Floor Corridor
+//boolean CALIBRATION__MAGN_USE_EXTENDED = true;
+//float magn_ellipsoid_center[3] = {341.589, -483.516, -624.337};
+//float magn_ellipsoid_transform[3][3] = {{0.997072, -0.00730061, -0.00682034}, {-0.00730061, 0.934199, 0.0344627}, {-0.00682034, 0.0344627, 0.928455}};
+
+//HOME1
+//boolean CALIBRATION__MAGN_USE_EXTENDED = true;
+//float magn_ellipsoid_center[3] = {-112.589, -474.339, -502.132};
+//float magn_ellipsoid_transform[3][3] = {{0.941456, 0.00699288, 0.00523861}, {0.00699288, 0.977762, 0.0245577}, {0.00523861, 0.0245577, 0.969899}};
 
 boolean CALIBRATION__MAGN_USE_EXTENDED = true;
-float magn_ellipsoid_center[3] = {386.628, -499.416, -642.219};
-float magn_ellipsoid_transform[3][3] = {{0.990312, -0.00207322, -0.0117924}, {-0.00207322, 0.979986, 0.0162755}, {-0.0117924, 0.0162755, 0.967587}};
+float magn_ellipsoid_center[3] = {-133.789, -427.062, -588.824};
+float magn_ellipsoid_transform[3][3] = {{0.827898, 0.0444361, 0.0185851}, {0.0444361, 0.955654, 0.0931553}, {0.0185851, 0.0931553, 0.706110}};
 
 // Gyroscope
 // "gyro x,y,z (current/average) = .../OFFSET_X  .../OFFSET_Y  .../OFFSET_Z
-float GYRO_AVERAGE_OFFSET_X = 0.0;
+float GYRO_AVERAGE_OFFSET_X = -0.01;
 float GYRO_AVERAGE_OFFSET_Y = 0.0;
-float GYRO_AVERAGE_OFFSET_Z = 0.0;
+float GYRO_AVERAGE_OFFSET_Z = 0.01;
 
 /*
 // Calibration example:
@@ -576,7 +592,7 @@ void reset_sensor_fusion() {
   // GET PITCH
   // Using y-z-plane-component/x-component of gravity vector
   pitch = -atan2(accel[0], sqrt(accel[1] * accel[1] + accel[2] * accel[2]));
-	
+  
   // GET ROLL
   // Compensate pitch of gravity vector 
   Vector_Cross_Product(temp1, accel, xAxis);
@@ -820,7 +836,7 @@ void loop()
          LOG_PORT.print("GYRO_AVERAGE_OFFSET_Y:");LOG_PORT.println(GYRO_AVERAGE_OFFSET_Y);
          LOG_PORT.print("GYRO_AVERAGE_OFFSET_Z:");LOG_PORT.println(GYRO_AVERAGE_OFFSET_Z);
       }
-	  else if (command == 'c') // Set _i_nput mode
+    else if (command == 'c') // Set _i_nput mode
       {
         char input_param = readChar();
         if (input_param == 'a')  // Calibrate _a_ccelerometer
@@ -941,15 +957,15 @@ void loop()
               GYRO_AVERAGE_OFFSET_Z = value_param;
         }
       }
-	  else if (command == 'I') // Toggle _i_nertial-only mode for yaw computation
-	  {
-		DEBUG__NO_DRIFT_CORRECTION = !DEBUG__NO_DRIFT_CORRECTION;
+    else if (command == 'I') // Toggle _i_nertial-only mode for yaw computation
+    {
+    DEBUG__NO_DRIFT_CORRECTION = !DEBUG__NO_DRIFT_CORRECTION;
 #if DEBUG__USE_ONLY_DMP_M0 == true
-		// Update reference for yaw...
-		initialmagyaw = -MAG_Heading;
-		initialimuyaw = imu.yaw*PI/180.0f;
+    // Update reference for yaw...
+    initialmagyaw = -MAG_Heading;
+    initialimuyaw = imu.yaw*PI/180.0f;
 #endif // DEBUG__USE_ONLY_DMP_M0
-	  }
+    }
 #if OUTPUT__HAS_RN_BLUETOOTH == true
       // Read messages from bluetooth module
       // For this to work, the connect/disconnect message prefix of the module has to be set to "#".
@@ -990,7 +1006,7 @@ void loop()
       compensate_sensor_errors();
 
 #if DEBUG__USE_ONLY_DMP_M0 == true
-	  Euler_angles_only_DMP_M0();
+    Euler_angles_only_DMP_M0();
 #else
       // Run DCM algorithm
       Compass_Heading(); // Calculate magnetic heading
@@ -1008,7 +1024,7 @@ void loop()
       compensate_sensor_errors();
     
 #if DEBUG__USE_ONLY_DMP_M0 == true
-	  Euler_angles_only_DMP_M0();
+    Euler_angles_only_DMP_M0();
 #else
       // Run DCM algorithm
       Compass_Heading(); // Calculate magnetic heading
@@ -1041,7 +1057,7 @@ void loop()
 #if DEBUG__ADD_LOOP_DELAY == true
   else
   {
-	delay(DEBUG__LOOP_DELAY);
+  delay(DEBUG__LOOP_DELAY);
   }
 #endif // DEBUG__ADD_LOOP_DELAY
 #endif

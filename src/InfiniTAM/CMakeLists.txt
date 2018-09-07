@@ -4,7 +4,7 @@
 
 cmake_minimum_required(VERSION 2.8)
 
-PROJECT(InfiniTAM)
+PROJECT(infinitam)
 
 #################################
 # Specify the CMake module path #
@@ -12,9 +12,9 @@ PROJECT(InfiniTAM)
 
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 
-####################################
-# Find catkin macros and libraries #
-####################################
+#####################
+# Offer ROS Support #
+#####################
 
 find_package(catkin REQUIRED COMPONENTS
   roscpp
