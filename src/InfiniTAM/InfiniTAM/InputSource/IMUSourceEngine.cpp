@@ -53,25 +53,12 @@ bool IMUSourceEngine::hasMoreMeasurements(void)
 
 void IMUSourceEngine::getMeasurement(ITMIMUMeasurement *imu)
 {
-<<<<<<< HEAD
-	//bool bUsedCache = false;
-	
-=======
->>>>>>> develop
 	if (cached_imu != NULL)
 	{
 		imu->R = cached_imu->R;
 		delete cached_imu;
 		cached_imu = NULL;
-<<<<<<< HEAD
-		//bUsedCache = true;
 	}
 
-	//if (!bUsedCache) this->loadIMUIntoCache();
-
-=======
-	}
-
->>>>>>> develop
 	++currentFrameNo;
 }

@@ -11,8 +11,6 @@ using namespace sensor_msgs;
 using namespace message_filters;
 using namespace ITMLib;
 
-<<<<<<< HEAD
-=======
 std::vector<double> qToRPY(std::vector<double> q) {
     double x = q[0];
     double y = q[1];
@@ -60,7 +58,6 @@ std::vector<double> rpyToQ(std::vector<double> rpy) {
     return q;
 }
 
->>>>>>> develop
 void ROSEngine::processMessage(const ImageConstPtr& rgb_image_msg, const ImageConstPtr& depth_image_msg, const ImuConstPtr& imu_msg)
 {
 	std::lock_guard<std::mutex> process_message_lock(images_mutex_);
@@ -84,27 +81,6 @@ void ROSEngine::processMessage(const ImageConstPtr& rgb_image_msg, const ImageCo
 		depth[i] = depth_msg_data[i];
 	}
 
-<<<<<<< HEAD
-//	bool bUsedCache = false;
-//
-//	if (cached_imu != NULL)
-//	{
-//		imu->R = cached_imu->R;
-//		delete cached_imu;
-//		cached_imu = NULL;
-//		bUsedCache = true;
-//	}
-//
-//	if (!bUsedCache) {
-//		//load into cache
-
-	imuSource->cached_imu = new ITMIMUMeasurement();
-
-	float x = imu_msg->orientation.x;
-	float y = imu_msg->orientation.y;
-	float z = imu_msg->orientation.z;
-	float w = imu_msg->orientation.w;
-=======
 	imuSource->cached_imu = new ITMIMUMeasurement();
 
 	std::vector<double> quaternion = {0, 0, 0, 0};
@@ -175,7 +151,6 @@ void ROSEngine::processMessage(const ImageConstPtr& rgb_image_msg, const ImageCo
     double y = quaternion[1];
     double z = quaternion[2];
     double w = quaternion[3];
->>>>>>> develop
 
 	imuSource->cached_imu->R.m00 = 1-2*y*y-2*z*z;
 	imuSource->cached_imu->R.m01 = 2*x*y-2*z*w;
@@ -186,25 +161,14 @@ void ROSEngine::processMessage(const ImageConstPtr& rgb_image_msg, const ImageCo
 	imuSource->cached_imu->R.m20 = 2*x*z-2*y*w;
 	imuSource->cached_imu->R.m21 = 2*y*z+2*x*w;
 	imuSource->cached_imu->R.m22 = 1-2*x*x-2*y*y;
-<<<<<<< HEAD
-//	}
-    //cout << cached_imu->R.m00 << endl;
-	imuSource->currentFrameNo++;
-=======
->>>>>>> develop
 }
 
 void ROSEngine::topicListenerThread()
 {
 	// subscribe to rgb and depth topics
-<<<<<<< HEAD
-    message_filters::Subscriber<sensor_msgs::Image> rgb_sub_(nh_, "/camera/color/image_raw", 5);
-    message_filters::Subscriber<sensor_msgs::Image> depth_sub_(nh_, "/camera/depth/image_rect_raw", 5);
-=======
     message_filters::Subscriber<sensor_msgs::Image> rgb_sub_(nh_, "/camera/color/image_raw", 1);
     message_filters::Subscriber<sensor_msgs::Image> depth_sub_(nh_, "/camera/depth/image_rect_raw", 1);
     //message_filters::Subscriber<sensor_msgs::Image> depth_sub_(nh_, "/camera/aligned_depth_to_color/image_raw", 1);
->>>>>>> develop
 	message_filters::Subscriber<sensor_msgs::Imu> imu_sub_(nh_, "/imu", 5);
 	typedef sync_policies::ApproximateTime<sensor_msgs::Image, sensor_msgs::Image, sensor_msgs::Imu> ITAMSyncPolicy;
 	Synchronizer<ITAMSyncPolicy> sync(ITAMSyncPolicy(10), rgb_sub_, depth_sub_, imu_sub_);
@@ -223,8 +187,6 @@ ROSEngine::ROSEngine(const char *calibFilename,
 			topic_listener_thread(&ROSEngine::topicListenerThread, this) // Starts up topicListenerThread
 {
 	this->calib.disparityCalib.SetStandard(); // assumes depth is in millimeters
-<<<<<<< HEAD
-=======
 //	std::cout << this->calib.intrinsics_rgb.projectionParamsSimple.all << std::endl;
 //	std::cout << this->calib.intrinsics_d.projectionParamsSimple.all << std::endl;
 //    std::cout << this->calib.trafo_rgb_to_depth.calib << std::endl;
@@ -232,7 +194,6 @@ ROSEngine::ROSEngine(const char *calibFilename,
 
 //	ITMLib::readIntrinsics(src, this->calib.intrinsics_rgb);
 //	ITMLib::readIntrinsics(src, this->calib.intrinsics_d);
->>>>>>> develop
 
 }
 
